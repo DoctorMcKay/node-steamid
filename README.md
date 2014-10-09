@@ -12,7 +12,7 @@ Install it from npm:
 
 A SteamID is made up of four parts: its **universe**, its **type**, its **instance**, and its **account ID**.
 
-- **Universe**: Currently there, are 5 universes. A universe is a unique instance of Steam. You'll probably only be interacting with the public universe, which is the regular Steam. Only Valve employees can access non-public universes.
+- **Universe**: Currently, there are 5 universes. A universe is a unique instance of Steam. You'll probably only be interacting with the public universe, which is the regular Steam. Only Valve employees can access non-public universes.
 - **Type**: A SteamID's type determines what it identifies. The most common type is *individual*, for user accounts. There are also other types such as *clans* (Steam groups), *gameservers*, and more.
 - **Instance**: The instance ID isn't usually used.
 - **Account ID**: This represents a unique account of a type.
