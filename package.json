@@ -1,0 +1,18 @@
+{
+	"name": "steamid",
+	"version": "0.1.0",
+	"description": "Exposes a SteamID object class for easy SteamID management",
+	"keywords": ["steam", "steamid", "steam account"],
+	"homepage": "https://github.com/DoctorMcKay/node-steamid",
+	"bugs": {
+		"url": "https://github.com/DoctorMcKay/node-steamid/issues"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Doctor_McKay/node-steamid.git"
+	},
+	"dependencies": {
+		"cuint": "0.1.x"
+	}
+}
