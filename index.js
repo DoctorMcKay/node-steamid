@@ -94,12 +94,12 @@ SteamID.prototype.isValid = function() {
 	return (this.universe != SteamID.Universe.INVALID && this.type != SteamID.Type.INVALID);
 };
 
-SteamID.prototype.getSteam2RenderedID = function() {
+SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 	if(this.type != SteamID.Type.INDIVIDUAL) {
 		throw new Error("Can't get Steam2 rendered ID for non-individual ID");
 	} else {
 		var universe = this.universe;
-		if(universe === 1) {
+		if(!newerFormat && universe === 1) {
 			universe = 0;
 		}
 		
