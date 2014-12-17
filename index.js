@@ -115,6 +115,8 @@ SteamID.prototype.getSteamID64 = function() {
 	return new UInt64(this.accountid, (this.universe << 24) | (this.type << 20) | (this.instance)).toString();
 };
 
+SteamID.prototype.toString = SteamID.prototype.getSteamID64;
+
 // Private methods/functions
 function getTypeFromChar(typeChar) {
 	for(var type in SteamID.TypeChars) {
