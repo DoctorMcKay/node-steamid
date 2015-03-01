@@ -14,5 +14,8 @@
 	},
 	"dependencies": {
 		"cuint": "0.1.x"
+	},
+	"scripts": {
+		"test": "node test.js"
 	}
 }
