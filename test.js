@@ -134,7 +134,7 @@ try {
 	sid.instance = 41511;
 	sid.accountid = 43253156;
 	val = sid.getSteam3RenderedID();
-	assert.strictEqual(val, "[A:1:43253156]", "unexpected rendered steam3id value " + val); // TODO: Figure out when to render instanceids
+	assert.strictEqual(val, "[A:1:43253156:41511]", "unexpected rendered steam3id value " + val);
 	end();
 	
 	start("steamid64 rendering (individual)");
