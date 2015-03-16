@@ -1,6 +1,6 @@
 {
 	"name": "steamid",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Exposes a SteamID object class for easy SteamID management",
 	"keywords": ["steam", "steamid", "steam account"],
 	"homepage": "https://github.com/DoctorMcKay/node-steamid",
