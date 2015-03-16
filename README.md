@@ -27,8 +27,7 @@ SteamID.Universe = {
 	"PUBLIC": 1,
 	"BETA": 2,
 	"INTERNAL": 3,
-	"DEV": 4,
-	"RC": 5
+	"DEV": 4
 };
 ```
 
