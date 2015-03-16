@@ -61,14 +61,14 @@ function SteamID(input) {
 	
 	var matches;
 	if((matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
-		this.universe = parseInt(matches[1]) || SteamID.Universe.PUBLIC; // If it's 0, turn it into 1 for public
+		this.universe = parseInt(matches[1], 10) || SteamID.Universe.PUBLIC; // If it's 0, turn it into 1 for public
 		this.type = SteamID.Type.INDIVIDUAL;
 		this.instance = SteamID.Instance.DESKTOP;
-		this.accountid = (parseInt(matches[3]) * 2) + parseInt(matches[2]);
+		this.accountid = (parseInt(matches[3], 10) * 2) + parseInt(matches[2], 10);
 	} else if((matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?\]$/))) {
 		this.type = getTypeFromChar(matches[1]);
-		this.universe = parseInt(matches[2]);
-		this.accountid = parseInt(matches[3]);
+		this.universe = parseInt(matches[2], 10);
+		this.accountid = parseInt(matches[3], 10);
 		
 		if(!matches[4]) {
 			if(this.type == SteamID.Type.INDIVIDUAL) {
@@ -77,7 +77,7 @@ function SteamID(input) {
 				this.instance = SteamID.Instance.ALL;
 			}
 		} else {
-			this.instance = parseInt(matches[4].substring(1));
+			this.instance = parseInt(matches[4].substring(1), 10);
 		}
 	} else if(isNaN(input)) {
 		throw new Error("Unknown input format");
@@ -121,7 +121,7 @@ SteamID.prototype.toString = SteamID.prototype.getSteamID64;
 function getTypeFromChar(typeChar) {
 	for(var type in SteamID.TypeChars) {
 		if(SteamID.TypeChars[type] == typeChar) {
-			return parseInt(type);
+			return parseInt(type, 10);
 		}
 	}
 	
