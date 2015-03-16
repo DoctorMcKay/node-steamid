@@ -157,9 +157,24 @@ try {
 	assert.strictEqual(val, "90883702753783269", "unexpected rendered steamid64 value " + val);
 	end();
 	
-	start("invalid id");
+	start("invalid new id");
 	sid = new SteamID();
 	assert.equal(sid.isValid(), false, "expected new id to be invalid");
+	end();
+	
+	start("invalid individual instance");
+	sid = new SteamID("[U:1:46143802:10]");
+	assert.equal(sid.isValid(), false, "expected individual id with instance 10 to be invalid");
+	end();
+	
+	start("invalid non-all clan instance");
+	sid = new SteamID("[g:1:4681548:2]");
+	assert.equal(sid.isValid(), false, "expected clan id with instance 2 to be invalid");
+	end();
+	
+	start("invalid gameserver id with accountid 0");
+	sid = new SteamID("[G:1:0]");
+	assert.equal(sid.isValid(), false, "expected gameserver id with accountid 0 to be invalid");
 	end();
 } catch(e) {
 	console.log("NOT OK!");
