@@ -108,7 +108,7 @@ SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 };
 
 SteamID.prototype.getSteam3RenderedID = function() {
-	return '[' + SteamID.TypeChars[this.type] + ':' + this.universe + ':' + this.accountid + ']';
+	return '[' + SteamID.TypeChars[this.type] + ':' + this.universe + ':' + this.accountid + ((this.type == SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.DESKTOP) || (this.type != SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.ALL) ? ':' + this.instance : '') + ']';
 };
 
 SteamID.prototype.getSteamID64 = function() {
