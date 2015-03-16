@@ -8,8 +8,7 @@ SteamID.Universe = {
 	"PUBLIC": 1,
 	"BETA": 2,
 	"INTERNAL": 3,
-	"DEV": 4,
-	"RC": 5
+	"DEV": 4
 };
 
 // Type constants
@@ -91,7 +90,27 @@ function SteamID(input) {
 }
 
 SteamID.prototype.isValid = function() {
-	return (this.universe != SteamID.Universe.INVALID && this.type != SteamID.Type.INVALID);
+	if(this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
+		return false;
+	}
+	
+	if(this.universe <= SteamID.Universe.INVALID || this.universe > SteamID.Universe.DEV) {
+		return false;
+	}
+	
+	if(this.type == SteamID.Type.INDIVIDUAL && (this.accountid === 0 || this.instance > SteamID.Instance.WEB)) {
+		return false;
+	}
+	
+	if(this.type == SteamID.Type.CLAN && (this.accountid === 0 || this.instance != SteamID.Instance.ALL)) {
+		return false;
+	}
+	
+	if(this.type == SteamID.Type.GAMESERVER && this.accountid === 0) {
+		return false;
+	}
+	
+	return true;
 };
 
 SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
