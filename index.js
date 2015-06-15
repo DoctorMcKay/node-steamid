@@ -81,11 +81,11 @@ function SteamID(input) {
 	} else if(isNaN(input)) {
 		throw new Error("Unknown input format");
 	} else {
-		var bits = padWithZeroes(new UInt64(input).toString(2), 64);
-		this.universe = parseInt(bits.substring(0, 8), 2);
-		this.type = parseInt(bits.substring(8, 12), 2);
-		this.instance = parseInt(bits.substring(12, 32), 2);
-		this.accountid = parseInt(bits.substring(32), 2);
+		var num = new UInt64(input, 10);
+		this.accountid = num.toNumber() & 0xFFFFFFFF;
+		this.instance = num.shiftRight(32).toNumber() & 0xFFFFF;
+		this.type = num.shiftRight(20).toNumber() & 0xF;
+		this.universe = num.shiftRight(4).toNumber();
 	}
 }
 
@@ -145,12 +145,4 @@ function getTypeFromChar(typeChar) {
 	}
 	
 	return SteamID.Type.INVALID;
-}
-
-function padWithZeroes(text, length) {
-	while(text.length < length) {
-		text = '0' + text;
-	}
-	
-	return text;
 }
