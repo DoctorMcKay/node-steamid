@@ -46,6 +46,15 @@ SteamID.TypeChars[SteamID.Type.CONTENT_SERVER] = 'C';
 SteamID.TypeChars[SteamID.Type.CLAN] = 'g';
 SteamID.TypeChars[SteamID.Type.CHAT] = 'T';
 
+SteamID.AccountIDMask = 0xFFFFFFFF;
+SteamID.AccountInstanceMask = 0x000FFFFF;
+
+SteamID.ChatInstanceFlags = {
+	"Clan": (SteamID.AccountInstanceMask + 1) >> 1,
+	"Lobby": (SteamID.AccountInstanceMask + 1) >> 2,
+	"MMSLobby": (SteamID.AccountInstanceMask + 1) >> 3
+};
+
 function SteamID(input) {
 	// Instance variables
 	this.universe = SteamID.Universe.INVALID;
@@ -60,23 +69,42 @@ function SteamID(input) {
 	
 	var matches;
 	if((matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
+		// Steam2 ID
 		this.universe = parseInt(matches[1], 10) || SteamID.Universe.PUBLIC; // If it's 0, turn it into 1 for public
 		this.type = SteamID.Type.INDIVIDUAL;
 		this.instance = SteamID.Instance.DESKTOP;
 		this.accountid = (parseInt(matches[3], 10) * 2) + parseInt(matches[2], 10);
 	} else if((matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?\]$/))) {
-		this.type = getTypeFromChar(matches[1]);
+		// Steam3 ID
 		this.universe = parseInt(matches[2], 10);
 		this.accountid = parseInt(matches[3], 10);
 		
-		if(!matches[4]) {
-			if(this.type == SteamID.Type.INDIVIDUAL) {
-				this.instance = SteamID.Instance.DESKTOP;
-			} else {
-				this.instance = SteamID.Instance.ALL;
-			}
-		} else {
+		var typeChar = matches[1];
+		
+		if(matches[4]) {
 			this.instance = parseInt(matches[4].substring(1), 10);
+		} else {
+			switch(typeChar) {
+				case 'g':
+				case 'T':
+				case 'c':
+				case 'L':
+					this.instance = SteamID.Instance.ALL;
+					break;
+				
+				default:
+					this.instance = SteamID.Instance.DESKTOP;
+			}
+		}
+		
+		if(typeChar == 'c') {
+			this.instance |= SteamID.ChatInstanceFlags.Clan;
+			this.type = SteamID.Type.CHAT;
+		} else if(typeChar == 'L') {
+			this.instance |= SteamID.ChatInstanceFlags.Lobby;
+			this.type = SteamID.Type.CHAT;
+		} else {
+			this.type = getTypeFromChar(typeChar);
 		}
 	} else if(isNaN(input)) {
 		throw new Error("Unknown input format");

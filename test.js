@@ -72,6 +72,26 @@ try {
 	});
 	end();
 	
+	start("steam3id construction (lobby)");
+	sid = new SteamID("[L:1:12345]");
+	checkProperties(sid, {
+		"universe": SteamID.Universe.PUBLIC,
+		"type": SteamID.Type.CHAT,
+		"instance": SteamID.ChatInstanceFlags.Lobby,
+		"accountid": 12345
+	});
+	end();
+	
+	start("steam3id construction (lobby with instanceid)");
+	sid = new SteamID("[L:1:12345:55]");
+	checkProperties(sid, {
+		"universe": SteamID.Universe.PUBLIC,
+		"type": SteamID.Type.CHAT,
+		"instance": SteamID.ChatInstanceFlags.Lobby | 55,
+		"accountid": 12345
+	});
+	end();
+	
 	start("steamid64 construction (individual)");
 	sid = new SteamID("76561198006409530");
 	checkProperties(sid, {
