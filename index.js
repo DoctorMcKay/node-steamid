@@ -83,18 +83,8 @@ function SteamID(input) {
 		
 		if(matches[4]) {
 			this.instance = parseInt(matches[4].substring(1), 10);
-		} else {
-			switch(typeChar) {
-				case 'g':
-				case 'T':
-				case 'c':
-				case 'L':
-					this.instance = SteamID.Instance.ALL;
-					break;
-				
-				default:
-					this.instance = SteamID.Instance.DESKTOP;
-			}
+		} else if(typeChar == 'U') {
+			this.instance = SteamID.Instance.DESKTOP;
 		}
 		
 		if(typeChar == 'c') {
