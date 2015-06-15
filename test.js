@@ -167,6 +167,16 @@ try {
 	assert.strictEqual(val, "[A:1:43253156:41511]", "unexpected rendered steam3id value " + val);
 	end();
 	
+	start("steam3id rendering (lobby)");
+	sid = new SteamID();
+	sid.universe = SteamID.Universe.PUBLIC;
+	sid.type = SteamID.Type.CHAT;
+	sid.instance = SteamID.ChatInstanceFlags.Lobby;
+	sid.accountid = 451932;
+	val = sid.getSteam3RenderedID();
+	assert.strictEqual(val, "[L:1:451932]");
+	end();
+	
 	start("steamid64 rendering (individual)");
 	sid = new SteamID();
 	sid.universe = SteamID.Universe.PUBLIC;

@@ -155,7 +155,16 @@ SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 };
 
 SteamID.prototype.getSteam3RenderedID = function() {
-	return '[' + SteamID.TypeChars[this.type] + ':' + this.universe + ':' + this.accountid + ((this.type == SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.DESKTOP) || (this.type != SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.ALL) ? ':' + this.instance : '') + ']';
+	var typeChar = SteamID.TypeChars[this.type] || 'i';
+	
+	if(this.instance & SteamID.ChatInstanceFlags.Clan) {
+		typeChar = 'c';
+	} else if(this.instance & SteamID.ChatInstanceFlags.Lobby) {
+		typeChar = 'L';
+	}
+	
+	var renderInstance = (this.type == SteamID.Type.ANON_GAMESERVER || this.type == SteamID.Type.MULTISEAT || (this.type == SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.DESKTOP));
+	return '[' + typeChar + ':' + this.universe + ':' + this.accountid + (renderInstance ? ':' + this.instance : '') + ']';
 };
 
 SteamID.prototype.getSteamID64 = function() {
