@@ -72,7 +72,17 @@ try {
 	});
 	end();
 	
-	start("steamid64 construction");
+	start("steamid64 construction (individual)");
+	sid = new SteamID("76561198006409530");
+	checkProperties(sid, {
+		"universe": SteamID.Universe.PUBLIC,
+		"type": SteamID.Type.INDIVIDUAL,
+		"instance": SteamID.Instance.DESKTOP,
+		"accountid": 46143802
+	});
+	end();
+	
+	start("steamid64 construction (clan)");
 	sid = new SteamID("103582791434202956");
 	checkProperties(sid, {
 		"universe": SteamID.Universe.PUBLIC,
