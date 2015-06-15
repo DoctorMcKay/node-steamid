@@ -62,6 +62,16 @@ try {
 	});
 	end();
 	
+	start("steam3id construction (gameserver)");
+	sid = new SteamID("[G:1:31]");
+	checkProperties(sid, {
+		"universe": SteamID.Universe.PUBLIC,
+		"type": SteamID.Type.GAMESERVER,
+		"instance": SteamID.Instance.ALL,
+		"accountid": 31
+	});
+	end();
+	
 	start("steam3id construction (anon gameserver)");
 	sid = new SteamID("[A:1:46124:11245]");
 	checkProperties(sid, {
