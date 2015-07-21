@@ -45,6 +45,7 @@ SteamID.TypeChars[SteamID.Type.PENDING] = 'P';
 SteamID.TypeChars[SteamID.Type.CONTENT_SERVER] = 'C';
 SteamID.TypeChars[SteamID.Type.CLAN] = 'g';
 SteamID.TypeChars[SteamID.Type.CHAT] = 'T';
+SteamID.TypeChars[SteamID.Type.ANON_USER] = 'a';
 
 SteamID.AccountIDMask = 0xFFFFFFFF;
 SteamID.AccountInstanceMask = 0x000FFFFF;
