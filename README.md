@@ -96,6 +96,15 @@ sid.instance = SteamID.Instance.DESKTOP;
 sid.accountid = 46143802;
 ```
 
+## Individual AccountID
+
+There's a shorthand method for creating an individual SteamID with the desktop instance in the public universe given an accountid:
+
+```js
+var SteamID = require('steamid');
+var sid = SteamID.fromIndividualAccountID(46143802);
+```
+
 # Using a SteamID
 
 Once you have created a `SteamID` object, you can access its properties (`universe`, `type`, `instance`, and `accountid`) or you can convert it between rendered types.
@@ -105,6 +114,8 @@ Once you have created a `SteamID` object, you can access its properties (`univer
 Returns `true` if the object represents a valid SteamID, or `false` if not.
 
 ## getSteam2RenderedID([newerFormat])
+
+*Shorthand: `steam2([newerFormat])`*
 
 Returns the Steam2 rendered ID format for individual accounts. Throws an error if the type isn't individual.
 
@@ -120,6 +131,8 @@ console.log(sid.getSteam2RenderedID(true)); // STEAM_1:0:23071901
 ```
 
 ## getSteam3RenderedID()
+
+*Shorthand: `steam3()`*
 
 Returns the Steam3 rendered ID format.
 
