@@ -141,7 +141,7 @@ SteamID.prototype.isValid = function() {
 	return true;
 };
 
-SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
+SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 	if(this.type != SteamID.Type.INDIVIDUAL) {
 		throw new Error("Can't get Steam2 rendered ID for non-individual ID");
 	} else {
@@ -154,7 +154,7 @@ SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 	}
 };
 
-SteamID.prototype.getSteam3RenderedID = function() {
+SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
 	var typeChar = SteamID.TypeChars[this.type] || 'i';
 	
 	if(this.instance & SteamID.ChatInstanceFlags.Clan) {
@@ -167,11 +167,9 @@ SteamID.prototype.getSteam3RenderedID = function() {
 	return '[' + typeChar + ':' + this.universe + ':' + this.accountid + (renderInstance ? ':' + this.instance : '') + ']';
 };
 
-SteamID.prototype.getSteamID64 = function() {
+SteamID.prototype.toString = SteamID.prototype.getSteamID64 = function() {
 	return new UInt64(this.accountid, (this.universe << 24) | (this.type << 20) | (this.instance)).toString();
 };
-
-SteamID.prototype.toString = SteamID.prototype.getSteamID64;
 
 // Private methods/functions
 function getTypeFromChar(typeChar) {
