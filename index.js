@@ -98,7 +98,7 @@ function SteamID(input) {
 			this.type = getTypeFromChar(typeChar);
 		}
 	} else if(isNaN(input)) {
-		throw new Error("Unknown input format");
+		throw new Error("Unknown SteamID input format \"" + input + "\"");
 	} else {
 		var num = new UInt64(input, 10);
 		this.accountid = num.toNumber() & 0xFFFFFFFF;
