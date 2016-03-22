@@ -108,6 +108,15 @@ function SteamID(input) {
 	}
 }
 
+SteamID.fromIndividualAccountID = function(accountid) {
+	var sid = new SteamID();
+	sid.universe = SteamID.Universe.PUBLIC;
+	sid.type = SteamID.Type.INDIVIDUAL;
+	sid.instance = SteamID.Instance.DESKTOP;
+	sid.accountid = accountid || 0;
+	return sid;
+};
+
 SteamID.prototype.isValid = function() {
 	if(this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
 		return false;
