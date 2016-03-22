@@ -108,6 +108,11 @@ function SteamID(input) {
 	}
 }
 
+/**
+ * Create an individual SteamID in the public universe given an accountid
+ * @param {number} accountid - The user's account ID
+ * @return {SteamID}
+ */
 SteamID.fromIndividualAccountID = function(accountid) {
 	var sid = new SteamID();
 	sid.universe = SteamID.Universe.PUBLIC;
@@ -117,6 +122,10 @@ SteamID.fromIndividualAccountID = function(accountid) {
 	return sid;
 };
 
+/**
+ * Check whether this SteamID is valid (according to Steam's rules)
+ * @return {boolean}
+ */
 SteamID.prototype.isValid = function() {
 	if(this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
 		return false;
@@ -141,6 +150,11 @@ SteamID.prototype.isValid = function() {
 	return true;
 };
 
+/**
+ * Render this SteamID into Steam2 textual format
+ * @param {boolean} [newerFormat=false] - true if you want to use 1 in place of the leading 0 for the public universe
+ * @return {string}
+ */
 SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
 	if(this.type != SteamID.Type.INDIVIDUAL) {
 		throw new Error("Can't get Steam2 rendered ID for non-individual ID");
@@ -154,6 +168,10 @@ SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newe
 	}
 };
 
+/**
+ * Render this SteamID into Steam3 textual format
+ * @return {string}
+ */
 SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
 	var typeChar = SteamID.TypeChars[this.type] || 'i';
 	
@@ -167,6 +185,10 @@ SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
 	return '[' + typeChar + ':' + this.universe + ':' + this.accountid + (renderInstance ? ':' + this.instance : '') + ']';
 };
 
+/**
+ * Render this SteamID into 64-bit numeric format
+ * @return {string}
+ */
 SteamID.prototype.toString = SteamID.prototype.getSteamID64 = function() {
 	return new UInt64(this.accountid, (this.universe << 24) | (this.type << 20) | (this.instance)).toString();
 };
