@@ -32,6 +32,16 @@ try {
 	});
 	end();
 	
+	start("fromIndividualAcccountID construction");
+	sid = SteamID.fromIndividualAccountID(46143802);
+	checkProperties(sid, {
+		"universe": SteamID.Universe.PUBLIC,
+		"type": SteamID.Type.INDIVIDUAL,
+		"instance": SteamID.Instance.DESKTOP,
+		"accountid": 46143802
+	});
+	end();
+	
 	start("steam2id construction (universe 0)");
 	sid = new SteamID("STEAM_0:0:23071901");
 	checkProperties(sid, {
@@ -148,6 +158,16 @@ try {
 	assert.strictEqual(val, "STEAM_1:0:23071901", "unexpected rendered steam2id value " + val);
 	end();
 	
+	start("steam2id rendering (shorthand)");
+	sid = new SteamID();
+	sid.universe = SteamID.Universe.PUBLIC;
+	sid.type = SteamID.Type.INDIVIDUAL;
+	sid.instance = SteamID.Instance.DESKTOP;
+	sid.accountid = 46143802;
+	val = sid.steam2();
+	assert.strictEqual(val, "STEAM_0:0:23071901", "unexpected rendered steam2id value " + val);
+	end();
+	
 	start("steam2id rendering (non-individual)");
 	sid = new SteamID();
 	sid.universe = SteamID.Universe.PUBLIC;
@@ -164,6 +184,16 @@ try {
 	sid.instance = SteamID.Instance.DESKTOP;
 	sid.accountid = 46143802;
 	val = sid.getSteam3RenderedID();
+	assert.strictEqual(val, "[U:1:46143802]", "unexpected rendered steam3id value " + val);
+	end();
+	
+	start("steam3id rendering (shorthand)");
+	sid = new SteamID();
+	sid.universe = SteamID.Universe.PUBLIC;
+	sid.type = SteamID.Type.INDIVIDUAL;
+	sid.instance = SteamID.Instance.DESKTOP;
+	sid.accountid = 46143802;
+	val = sid.steam3();
 	assert.strictEqual(val, "[U:1:46143802]", "unexpected rendered steam3id value " + val);
 	end();
 	
