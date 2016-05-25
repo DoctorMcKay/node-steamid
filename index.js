@@ -101,7 +101,7 @@ function SteamID(input) {
 		throw new Error("Unknown SteamID input format \"" + input + "\"");
 	} else {
 		var num = new UInt64(input, 10);
-		this.accountid = num.toNumber() & 0xFFFFFFFF;
+		this.accountid = (num.toNumber() & 0xFFFFFFFF) >>> 0;
 		this.instance = num.shiftRight(32).toNumber() & 0xFFFFF;
 		this.type = num.shiftRight(20).toNumber() & 0xF;
 		this.universe = num.shiftRight(4).toNumber();
