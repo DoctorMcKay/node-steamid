@@ -118,7 +118,7 @@ SteamID.fromIndividualAccountID = function(accountid) {
 	sid.universe = SteamID.Universe.PUBLIC;
 	sid.type = SteamID.Type.INDIVIDUAL;
 	sid.instance = SteamID.Instance.DESKTOP;
-	sid.accountid = accountid || 0;
+	sid.accountid = isNaN(accountid) ? 0 : parseInt(accountid, 10);
 	return sid;
 };
 
