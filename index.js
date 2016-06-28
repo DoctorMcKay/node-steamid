@@ -151,6 +151,22 @@ SteamID.prototype.isValid = function() {
 };
 
 /**
+ * Check whether this chat SteamID is tied to a Steam group.
+ * @return {boolean}
+ */
+SteamID.prototype.isGroupChat = function() {
+	return !!(this.type == SteamID.Type.CHAT && this.instance & SteamID.ChatInstanceFlags.Clan);
+};
+
+/**
+ * Check whether this chat SteamID is a Steam lobby.
+ * @return {boolean}
+ */
+SteamID.prototype.isLobby = function() {
+	return !!(this.type == SteamID.Type.CHAT && (this.instance & SteamID.ChatInstanceFlags.Lobby || this.instance & SteamID.ChatInstanceFlags.MMSLobby));
+};
+
+/**
  * Render this SteamID into Steam2 textual format
  * @param {boolean} [newerFormat=false] - true if you want to use 1 in place of the leading 0 for the public universe
  * @return {string}

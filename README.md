@@ -113,6 +113,14 @@ Once you have created a `SteamID` object, you can access its properties (`univer
 
 Returns `true` if the object represents a valid SteamID, or `false` if not.
 
+## isGroupChat()
+
+Returns `true` if the `type` of this SteamID is `CHAT`, and it's associated with a Steam group's chat room.
+
+## isLobby()
+
+Returns `true` if the `type` of thie SteamID is `CHAT`, and it's associated with a Steam lobby.
+
 ## getSteam2RenderedID([newerFormat])
 
 *Shorthand: `steam2([newerFormat])`*
