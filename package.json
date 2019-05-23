@@ -1,8 +1,12 @@
 {
 	"name": "steamid",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Exposes a SteamID object class for easy SteamID management",
-	"keywords": ["steam", "steamid", "steam account"],
+	"keywords": [
+		"steam",
+		"steamid",
+		"steam account"
+	],
 	"homepage": "https://github.com/DoctorMcKay/node-steamid",
 	"bugs": {
 		"url": "https://github.com/DoctorMcKay/node-steamid/issues"
