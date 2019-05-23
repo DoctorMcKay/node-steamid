@@ -133,6 +133,8 @@ SteamID.fromIndividualAccountID = function(accountid) {
  * @return {boolean}
  */
 SteamID.prototype.isValid = function() {
+	fixTypes(this);
+
 	if (this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
 		return false;
 	}
@@ -161,6 +163,7 @@ SteamID.prototype.isValid = function() {
  * @return {boolean}
  */
 SteamID.prototype.isGroupChat = function() {
+	fixTypes(this);
 	return !!(this.type == SteamID.Type.CHAT && this.instance & SteamID.ChatInstanceFlags.Clan);
 };
 
@@ -169,6 +172,7 @@ SteamID.prototype.isGroupChat = function() {
  * @return {boolean}
  */
 SteamID.prototype.isLobby = function() {
+	fixTypes(this);
 	return !!(this.type == SteamID.Type.CHAT && (this.instance & SteamID.ChatInstanceFlags.Lobby || this.instance & SteamID.ChatInstanceFlags.MMSLobby));
 };
 
@@ -178,6 +182,7 @@ SteamID.prototype.isLobby = function() {
  * @return {string}
  */
 SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
+	fixTypes(this);
 	if (this.type != SteamID.Type.INDIVIDUAL) {
 		throw new Error("Can't get Steam2 rendered ID for non-individual ID");
 	} else {
@@ -195,6 +200,7 @@ SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newe
  * @return {string}
  */
 SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
+	fixTypes(this);
 	var typeChar = SteamID.TypeChars[this.type] || 'i';
 
 	if (this.instance & SteamID.ChatInstanceFlags.Clan) {
@@ -212,6 +218,7 @@ SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
  * @return {string}
  */
 SteamID.prototype.toString = SteamID.prototype.getSteamID64 = function() {
+	fixTypes(this);
 	return new UInt64(this.accountid, (this.universe << 24) | (this.type << 20) | (this.instance)).toString();
 };
 
@@ -224,4 +231,13 @@ function getTypeFromChar(typeChar) {
 	}
 
 	return SteamID.Type.INVALID;
+}
+
+function fixTypes(sid) {
+	['universe', 'type', 'instance', 'accountid'].forEach((prop) => {
+		var val = parseInt(sid[prop], 10);
+		if (!isNaN(val)) {
+			sid[prop] = val;
+		}
+	});
 }
