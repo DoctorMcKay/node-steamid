@@ -114,11 +114,17 @@ function SteamID(input) {
  * @return {SteamID}
  */
 SteamID.fromIndividualAccountID = function(accountid) {
+	var parsed = parseInt(accountid, 10);
+	if (isNaN(parsed)) {
+		process.stderr.write("[steamid] Warning: SteamID.fromIndividualAccountID() called with NaN argument \"" + accountid + "\" (type " + typeof accountid + ")\n");
+		parsed = 0;
+	}
+
 	var sid = new SteamID();
 	sid.universe = SteamID.Universe.PUBLIC;
 	sid.type = SteamID.Type.INDIVIDUAL;
 	sid.instance = SteamID.Instance.DESKTOP;
-	sid.accountid = isNaN(parseInt(accountid, 10)) ? 0 : parseInt(accountid, 10);
+	sid.accountid = parsed;
 	return sid;
 };
 
