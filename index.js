@@ -62,42 +62,42 @@ function SteamID(input) {
 	this.type = SteamID.Type.INVALID;
 	this.instance = SteamID.Instance.ALL;
 	this.accountid = 0;
-	
-	if(!input) {
+
+	if (!input) {
 		// Use the default invalid values
 		return;
 	}
-	
+
 	var matches;
-	if((matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
+	if ((matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
 		// Steam2 ID
 		this.universe = parseInt(matches[1], 10) || SteamID.Universe.PUBLIC; // If it's 0, turn it into 1 for public
 		this.type = SteamID.Type.INDIVIDUAL;
 		this.instance = SteamID.Instance.DESKTOP;
 		this.accountid = (parseInt(matches[3], 10) * 2) + parseInt(matches[2], 10);
-	} else if((matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?\]$/))) {
+	} else if ((matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?\]$/))) {
 		// Steam3 ID
 		this.universe = parseInt(matches[2], 10);
 		this.accountid = parseInt(matches[3], 10);
-		
+
 		var typeChar = matches[1];
-		
-		if(matches[4]) {
+
+		if (matches[4]) {
 			this.instance = parseInt(matches[4].substring(1), 10);
-		} else if(typeChar == 'U') {
+		} else if (typeChar == 'U') {
 			this.instance = SteamID.Instance.DESKTOP;
 		}
-		
-		if(typeChar == 'c') {
+
+		if (typeChar == 'c') {
 			this.instance |= SteamID.ChatInstanceFlags.Clan;
 			this.type = SteamID.Type.CHAT;
-		} else if(typeChar == 'L') {
+		} else if (typeChar == 'L') {
 			this.instance |= SteamID.ChatInstanceFlags.Lobby;
 			this.type = SteamID.Type.CHAT;
 		} else {
 			this.type = getTypeFromChar(typeChar);
 		}
-	} else if(isNaN(input)) {
+	} else if (isNaN(input)) {
 		throw new Error("Unknown SteamID input format \"" + input + "\"");
 	} else {
 		var num = new UInt64(input, 10);
@@ -127,26 +127,26 @@ SteamID.fromIndividualAccountID = function(accountid) {
  * @return {boolean}
  */
 SteamID.prototype.isValid = function() {
-	if(this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
+	if (this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
 		return false;
 	}
-	
-	if(this.universe <= SteamID.Universe.INVALID || this.universe > SteamID.Universe.DEV) {
+
+	if (this.universe <= SteamID.Universe.INVALID || this.universe > SteamID.Universe.DEV) {
 		return false;
 	}
-	
-	if(this.type == SteamID.Type.INDIVIDUAL && (this.accountid === 0 || this.instance > SteamID.Instance.WEB)) {
+
+	if (this.type == SteamID.Type.INDIVIDUAL && (this.accountid === 0 || this.instance > SteamID.Instance.WEB)) {
 		return false;
 	}
-	
-	if(this.type == SteamID.Type.CLAN && (this.accountid === 0 || this.instance != SteamID.Instance.ALL)) {
+
+	if (this.type == SteamID.Type.CLAN && (this.accountid === 0 || this.instance != SteamID.Instance.ALL)) {
 		return false;
 	}
-	
-	if(this.type == SteamID.Type.GAMESERVER && this.accountid === 0) {
+
+	if (this.type == SteamID.Type.GAMESERVER && this.accountid === 0) {
 		return false;
 	}
-	
+
 	return true;
 };
 
@@ -172,14 +172,14 @@ SteamID.prototype.isLobby = function() {
  * @return {string}
  */
 SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newerFormat) {
-	if(this.type != SteamID.Type.INDIVIDUAL) {
+	if (this.type != SteamID.Type.INDIVIDUAL) {
 		throw new Error("Can't get Steam2 rendered ID for non-individual ID");
 	} else {
 		var universe = this.universe;
-		if(!newerFormat && universe === 1) {
+		if (!newerFormat && universe === 1) {
 			universe = 0;
 		}
-		
+
 		return "STEAM_" + universe + ':' + (this.accountid & 1) + ':' + Math.floor(this.accountid / 2);
 	}
 };
@@ -190,13 +190,13 @@ SteamID.prototype.steam2 = SteamID.prototype.getSteam2RenderedID = function(newe
  */
 SteamID.prototype.steam3 = SteamID.prototype.getSteam3RenderedID = function() {
 	var typeChar = SteamID.TypeChars[this.type] || 'i';
-	
-	if(this.instance & SteamID.ChatInstanceFlags.Clan) {
+
+	if (this.instance & SteamID.ChatInstanceFlags.Clan) {
 		typeChar = 'c';
-	} else if(this.instance & SteamID.ChatInstanceFlags.Lobby) {
+	} else if (this.instance & SteamID.ChatInstanceFlags.Lobby) {
 		typeChar = 'L';
 	}
-	
+
 	var renderInstance = (this.type == SteamID.Type.ANON_GAMESERVER || this.type == SteamID.Type.MULTISEAT || (this.type == SteamID.Type.INDIVIDUAL && this.instance != SteamID.Instance.DESKTOP));
 	return '[' + typeChar + ':' + this.universe + ':' + this.accountid + (renderInstance ? ':' + this.instance : '') + ']';
 };
@@ -211,11 +211,11 @@ SteamID.prototype.toString = SteamID.prototype.getSteamID64 = function() {
 
 // Private methods/functions
 function getTypeFromChar(typeChar) {
-	for(var type in SteamID.TypeChars) {
-		if(SteamID.TypeChars[type] == typeChar) {
+	for (var type in SteamID.TypeChars) {
+		if (SteamID.TypeChars[type] == typeChar) {
 			return parseInt(type, 10);
 		}
 	}
-	
+
 	return SteamID.Type.INVALID;
 }
