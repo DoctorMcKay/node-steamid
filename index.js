@@ -116,7 +116,8 @@ function SteamID(input) {
 SteamID.fromIndividualAccountID = function(accountid) {
 	var parsed = parseInt(accountid, 10);
 	if (isNaN(parsed)) {
-		process.stderr.write("[steamid] Warning: SteamID.fromIndividualAccountID() called with NaN argument \"" + accountid + "\" (type " + typeof accountid + ")\n");
+		// writes to stderr in node
+		console.error("[steamid] Warning: SteamID.fromIndividualAccountID() called with NaN argument \"" + accountid + "\" (type " + typeof accountid + ")");
 		parsed = 0;
 	}
 
