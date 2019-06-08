@@ -235,7 +235,7 @@ function getTypeFromChar(typeChar) {
 }
 
 function fixTypes(sid) {
-	['universe', 'type', 'instance', 'accountid'].forEach((prop) => {
+	['universe', 'type', 'instance', 'accountid'].forEach(function(prop) {
 		var val = parseInt(sid[prop], 10);
 		if (!isNaN(val)) {
 			sid[prop] = val;
