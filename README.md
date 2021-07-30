@@ -2,6 +2,8 @@
 
 This module provides a SteamID object which makes SteamID usage and conversion easy.
 
+**v2 requires Node.js version 12 or later.**
+
 # Installation
 
 Install it from npm:
