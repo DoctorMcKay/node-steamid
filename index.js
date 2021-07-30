@@ -1,4 +1,9 @@
 class SteamID {
+	/**
+	 * List of possible universes
+	 * @static
+	 * @returns {{DEV: number, INTERNAL: number, PUBLIC: number, INVALID: number, BETA: number}}
+	 */
 	static get Universe() {
 		return {
 			INVALID: 0,
@@ -9,6 +14,11 @@ class SteamID {
 		};
 	}
 
+	/**
+	 * List of possible types
+	 * @static
+	 * @returns {{CHAT: number, P2P_SUPER_SEEDER: number, GAMESERVER: number, CLAN: number, ANON_USER: number, MULTISEAT: number, ANON_GAMESERVER: number, PENDING: number, CONTENT_SERVER: number, INVALID: number, INDIVIDUAL: number}}
+	 */
 	static get Type() {
 		return {
 			INVALID: 0,
@@ -25,6 +35,11 @@ class SteamID {
 		};
 	}
 
+	/**
+	 * List of named instances
+	 * @static
+	 * @returns {{ALL: number, CONSOLE: number, WEB: number, DESKTOP: number}}
+	 */
 	static get Instance() {
 		return {
 			ALL: 0,
@@ -34,6 +49,11 @@ class SteamID {
 		};
 	}
 
+	/**
+	 * Mapping of SteamID types to their characters
+	 * @static
+	 * @returns {object}
+	 */
 	static get TypeChars() {
 		return {
 			[SteamID.Type.INVALID]: 'I',
@@ -49,9 +69,25 @@ class SteamID {
 		};
 	}
 
+	/**
+	 * Mask to be used to get the AccountID out of a 64-bit SteamID
+	 * @static
+	 * @returns {number}
+	 */
 	static get AccountIDMask() { return 0xFFFFFFFF; }
+
+	/**
+	 * Mask to be used to get the instance out of the upper 32 bits of a 64-bit SteamID
+	 * @static
+	 * @returns {number}
+	 */
 	static get AccountInstanceMask() { return 0x000FFFFF; }
 
+	/**
+	 * Flags in SteamID instance for chat type IDs
+	 * @static
+	 * @returns {{Lobby: number, Clan: number, MMSLobby: number}}
+	 */
 	static get ChatInstanceFlags() {
 		return {
 			Clan: (SteamID.AccountInstanceMask + 1) >> 1,
@@ -60,6 +96,10 @@ class SteamID {
 		};
 	}
 
+	/**
+	 * Create a new SteamID object.
+	 * @param {string|BigInt} [input] - BigInt containing 64-bit SteamID, or string containing 64-bit SteamID/Steam2/Steam3 text formats. If omitted, creates a blank SteamID object.
+	 */
 	constructor(input) {
 		this.universe = SteamID.Universe.INVALID;
 		this.type = SteamID.Type.INVALID;
@@ -125,6 +165,12 @@ class SteamID {
 		}
 	}
 
+	/**
+	 * Creates a new SteamID object from an individual account ID.
+	 * @static
+	 * @param {int|BigInt|string} accountid
+	 * @returns {SteamID}
+	 */
 	static fromIndividualAccountID(accountid) {
 		if (typeof accountid == 'bigint') {
 			accountid = Number(accountid);
@@ -145,6 +191,12 @@ class SteamID {
 		return sid;
 	}
 
+	/**
+	 * Returns whether Steam would consider a given ID to be "valid".
+	 * This does not check whether the given ID belongs to a real account, nor does it check that the given ID is for
+	 * an individual account or in the public universe.
+	 * @returns {boolean}
+	 */
 	isValid() {
 		fixTypes(this);
 
@@ -164,6 +216,7 @@ class SteamID {
 			return false;
 		}
 
+		// noinspection RedundantIfStatementJS
 		if (this.type == SteamID.Type.GAMESERVER && this.accountid === 0) {
 			return false;
 		}
@@ -171,16 +224,29 @@ class SteamID {
 		return true;
 	}
 
+	/**
+	 * Checks whether the given ID is for a legacy group chat.
+	 * @returns {boolean}
+	 */
 	isGroupChat() {
 		fixTypes(this);
 		return !!(this.type == SteamID.Type.CHAT && this.instance & SteamID.ChatInstanceFlags.Clan);
 	}
 
+	/**
+	 * Check whether the given Id is for a game lobby.
+	 * @returns {boolean}
+	 */
 	isLobby() {
 		fixTypes(this);
 		return !!(this.type == SteamID.Type.CHAT && (this.instance & SteamID.ChatInstanceFlags.Lobby || this.instance & SteamID.ChatInstanceFlags.MMSLobby));
 	}
 
+	/**
+	 * Renders the ID in Steam2 format (e.g. "STEAM_0:0:23071901")
+	 * @param {boolean} [newerFormat=false] - If true, use 1 as the first digit instead of 0 for the public universe
+	 * @returns {string}
+	 */
 	steam2(newerFormat = false) {
 		fixTypes(this);
 		if (this.type != SteamID.Type.INDIVIDUAL) {
@@ -195,10 +261,19 @@ class SteamID {
 		}
 	}
 
+	/**
+	 * Renders the ID in Steam2 format (e.g. "STEAM_0:0:23071901")
+	 * @param {boolean} [newerFormat=false] - If true, use 1 as the first digit instead of 0 for the public universe
+	 * @returns {string}
+	 */
 	getSteam2RenderedID(newerFormat = false) {
 		return this.steam2(newerFormat);
 	}
 
+	/**
+	 * Renders the ID in Steam3 format (e.g. "[U:1:46143802]")
+	 * @returns {string}
+	 */
 	steam3() {
 		fixTypes(this);
 		let typeChar = SteamID.TypeChars[this.type] || 'i';
@@ -221,18 +296,34 @@ class SteamID {
 		return `[${typeChar}:${this.universe}:${this.accountid}${shouldRenderInstance ? `:${this.instance}` : ''}]`;
 	}
 
+	/**
+	 * Renders the ID in Steam3 format (e.g. "[U:1:46143802]")
+	 * @returns {string}
+	 */
 	getSteam3RenderedID() {
 		return this.steam3();
 	}
 
+	/**
+	 * Renders the ID in 64-bit decimal format, as a string (e.g. "76561198006409530")
+	 * @returns {string}
+	 */
 	getSteamID64() {
 		return this.getBigIntID().toString();
 	}
 
+	/**
+	 * Renders the ID in 64-bit decimal format, as a string (e.g. "76561198006409530")
+	 * @returns {string}
+	 */
 	toString() {
 		return this.getSteamID64();
 	}
 
+	/**
+	 * Renders the ID in 64-bit decimal format, as a BigInt (e.g. 76561198006409530n)
+	 * @returns {BigInt}
+	 */
 	getBigIntID() {
 		fixTypes(this);
 		let universe = BigInt(this.universe);
