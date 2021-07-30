@@ -2,7 +2,7 @@ const Assert = require('assert');
 const SteamID = require('./index.js');
 
 function start(test) {
-	process.stdout.write('testing ' + test + '... ');
+	process.stdout.write(`testing ${test}... `);
 }
 
 function end() {
@@ -10,7 +10,7 @@ function end() {
 }
 
 function checkProperty(obj, prop, expected) {
-	Assert.strictEqual(obj[prop], expected, 'unexpected ' + prop + ' value ' + obj[prop]);
+	Assert.strictEqual(obj[prop], expected, `unexpected ${prop} value ${obj[prop]}`);
 }
 
 function checkProperties(obj, expected) {
