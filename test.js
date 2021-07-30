@@ -40,6 +40,8 @@ try {
 		instance: SteamID.Instance.DESKTOP,
 		accountid: 46143802
 	});
+	Assert.strictEqual(sid.isValid(), true, 'expected individual id to be valid');
+	Assert.strictEqual(sid.isValidIndividual(), true, 'expected individual id to be valid individual');
 	end();
 
 	start('fromIndividualAccountID string construction');
@@ -105,6 +107,8 @@ try {
 		instance: SteamID.Instance.ALL,
 		accountid: 31
 	});
+	Assert.strictEqual(sid.isValid(), true, 'expected gameserver id to be valid');
+	Assert.strictEqual(sid.isValidIndividual(), false, 'expected gameserver id to be invalid individual');
 	end();
 
 	start('steam3id construction (anon gameserver)');
@@ -310,6 +314,7 @@ try {
 	start('invalid individual instance');
 	sid = new SteamID('[U:1:46143802:10]');
 	Assert.strictEqual(sid.isValid(), false, 'expected individual id with instance 10 to be invalid');
+	Assert.strictEqual(sid.isValidIndividual(), false, 'expected individual id with instance 10 to be invalid individual');
 	end();
 
 	start('invalid non-all clan instance');

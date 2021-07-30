@@ -225,6 +225,18 @@ class SteamID {
 	}
 
 	/**
+	 * Returns whether this SteamID is valid and belongs to an individual user in the public universe with a desktop instance.
+	 * This is what most people think of when they think of a SteamID. Does not check whether the account actually exists.
+	 * @returns {boolean}
+	 */
+	isValidIndividual() {
+		return this.universe == SteamID.Universe.PUBLIC
+			&& this.type == SteamID.Type.INDIVIDUAL
+			&& this.instance == SteamID.Instance.DESKTOP
+			&& this.isValid();
+	}
+
+	/**
 	 * Checks whether the given ID is for a legacy group chat.
 	 * @returns {boolean}
 	 */
