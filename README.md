@@ -23,40 +23,40 @@ There are enums for each type available under the root SteamID object.
 
 ```js
 SteamID.Universe = {
-	"INVALID": 0,
-	"PUBLIC": 1,
-	"BETA": 2,
-	"INTERNAL": 3,
-	"DEV": 4
-};
+	INVALID: 0,
+	PUBLIC: 1,
+	BETA: 2,
+	INTERNAL: 3,
+	DEV: 4
+}
 ```
 
 ## Types
 
 ```js
 SteamID.Type = {
-	"INVALID": 0,
-	"INDIVIDUAL": 1,
-	"MULTISEAT": 2,
-	"GAMESERVER": 3,
-	"ANON_GAMESERVER": 4,
-	"PENDING": 5,
-	"CONTENT_SERVER": 6,
-	"CLAN": 7,
-	"CHAT": 8,
-	"P2P_SUPER_SEEDER": 9,
-	"ANON_USER": 10
-};
+	INVALID: 0,
+	INDIVIDUAL: 1,
+	MULTISEAT: 2,
+	GAMESERVER: 3,
+	ANON_GAMESERVER: 4,
+	PENDING: 5,
+	CONTENT_SERVER: 6,
+	CLAN: 7,
+	CHAT: 8,
+	P2P_SUPER_SEEDER: 9,
+	ANON_USER: 10
+}
 ```
 
 ## Instances
 
 ```js
 SteamID.Instance = {
-	"ALL": 0,
-	"DESKTOP": 1,
-	"CONSOLE": 2,
-	"WEB": 4
+	ALL: 0,
+	DESKTOP: 1,
+	CONSOLE: 2,
+	WEB: 4
 };
 ```
 
@@ -67,29 +67,32 @@ You can create a SteamID object from a Steam2 rendered ID, a Steam3 rendered ID,
 ## Steam2 ID
 
 ```js
-var SteamID = require('steamid');
-var sid = new SteamID('STEAM_0:0:23071901');
+const SteamID = require('steamid');
+let sid = new SteamID('STEAM_0:0:23071901');
 ```
 
 ## Steam3 ID
 
 ```js
-var SteamID = require('steamid');
-var sid = new SteamID('[U:1:46143802]');
+const SteamID = require('steamid');
+let sid = new SteamID('[U:1:46143802]');
 ```
 
 ## SteamID64
 
 ```js
-var SteamID = require('steamid');
-var sid = new SteamID('76561198006409530');
+const SteamID = require('steamid');
+let sid = new SteamID('76561198006409530');
+
+// Or you can use a BigInt; new in steamid@2.0.0
+let sid2 = new SteamID(76561198006409530n);
 ```
 
 ## SteamID Parts
 
 ```js
-var SteamID = require('steamid');
-var sid = new SteamID();
+const SteamID = require('steamid');
+let sid = new SteamID();
 sid.universe = SteamID.Universe.PUBLIC;
 sid.type = SteamID.Type.INDIVIDUAL;
 sid.instance = SteamID.Instance.DESKTOP;
@@ -101,17 +104,24 @@ sid.accountid = 46143802;
 There's a shorthand method for creating an individual SteamID with the desktop instance in the public universe given an accountid:
 
 ```js
-var SteamID = require('steamid');
-var sid = SteamID.fromIndividualAccountID(46143802);
+const SteamID = require('steamid');
+let sid = SteamID.fromIndividualAccountID(46143802);
 ```
 
 # Using a SteamID
 
-Once you have created a `SteamID` object, you can access its properties (`universe`, `type`, `instance`, and `accountid`) or you can convert it between rendered types.
+Once you have created a `SteamID` object, you can access its properties (`universe`, `type`, `instance`, and `accountid`),
+or you can convert it between rendered types.
 
 ## isValid()
 
-Returns `true` if the object represents a valid SteamID, or `false` if not.
+Returns whether Steam would consider a given ID to be "valid". This does not check whether the given ID belongs to a
+real account that exists, nor does it check that the given ID is for an individual account or in the public universe.
+
+## isValidIndividual()
+
+Returns whether this SteamID is valid and belongs to an individual user in the public universe with a desktop instance.
+This is what most people think of when they think of a SteamID. Does not check whether the account actually exists.
 
 ## isGroupChat()
 
@@ -119,7 +129,7 @@ Returns `true` if the `type` of this SteamID is `CHAT`, and it's associated with
 
 ## isLobby()
 
-Returns `true` if the `type` of thie SteamID is `CHAT`, and it's associated with a Steam lobby.
+Returns `true` if the `type` of this SteamID is `CHAT`, and it's associated with a Steam lobby.
 
 ## getSteam2RenderedID([newerFormat])
 
@@ -132,8 +142,8 @@ If you pass `true` for `newerFormat`, the first digit will be 1 instead of 0 for
 Example:
 
 ```js
-var SteamID = require('steamid');
-var sid = new SteamID('76561198006409530');
+const SteamID = require('steamid');
+let sid = new SteamID('76561198006409530');
 console.log(sid.getSteam2RenderedID()); // STEAM_0:0:23071901
 console.log(sid.getSteam2RenderedID(true)); // STEAM_1:0:23071901
 ```
@@ -147,29 +157,47 @@ Returns the Steam3 rendered ID format.
 Examples:
 
 ```js
-var SteamID = require('steamid');
+const SteamID = require('steamid');
 
-var sid = new SteamID('76561198006409530');
+let sid = new SteamID(76561198006409530n);
 console.log(sid.getSteam3RenderedID()); // [U:1:46143802]
 
-var gid = new SteamID('103582791434202956');
+let gid = new SteamID(103582791434202956n);
 console.log(gid.getSteam3RenderedID()); // [g:1:4681548]
 ```
 
 ## getSteamID64()
 
-Returns the 64-bit representation of the SteamID.
+*Alias: `toString()`*
+
+Returns the 64-bit representation of the SteamID, as a string.
 
 Examples:
 
 ```js
-var SteamID = require('steamid');
+const SteamID = require('steamid');
 
-var sid = new SteamID('[g:1:4681548]');
-console.log(sid.getSteamID64()); // 103582791434202956
+let sid = new SteamID('[g:1:4681548]');
+console.log(sid.getSteamID64()); // "103582791434202956"
 
-var sid2 = new SteamID('STEAM_0:0:23071901');
-console.log(sid2.getSteamID64()); // 76561198006409530
+let sid2 = new SteamID('STEAM_0:0:23071901');
+console.log(sid2.getSteamID64()); // "76561198006409530"
+```
+
+## getBigIntID()
+
+Returns the 64-bit representation of the SteamID, as a BigInt.
+
+Examples:
+
+```js
+const SteamID = require('steamid');
+
+let sid = new SteamID('[g:1:4681548]');
+console.log(sid.getBigIntID()); // 103582791434202956n
+
+let sid2 = new SteamID('STEAM_0:0:23071901');
+console.log(sid2.getBigIntID()); // n76561198006409530n
 ```
 
 # Tests
