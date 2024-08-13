@@ -1,6 +1,6 @@
 {
 	"name": "steamid",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "Exposes a SteamID object class for easy SteamID management",
 	"keywords": [
 		"steam",
