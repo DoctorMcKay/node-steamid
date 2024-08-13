@@ -1,60 +1,31 @@
+import {PossibleUniverses, Universes, PossibleTypes, Types, PossibleInstances, Instances} from './enums';
+
 class SteamID {
 	/**
 	 * List of possible universes
-	 * @static
-	 * @returns {{DEV: number, INTERNAL: number, PUBLIC: number, INVALID: number, BETA: number}}
 	 */
-	static get Universe() {
-		return {
-			INVALID: 0,
-			PUBLIC: 1,
-			BETA: 2,
-			INTERNAL: 3,
-			DEV: 4
-		};
+	static get Universe(): PossibleUniverses {
+		return Universes;
 	}
 
 	/**
 	 * List of possible types
-	 * @static
-	 * @returns {{CHAT: number, P2P_SUPER_SEEDER: number, GAMESERVER: number, CLAN: number, ANON_USER: number, MULTISEAT: number, ANON_GAMESERVER: number, PENDING: number, CONTENT_SERVER: number, INVALID: number, INDIVIDUAL: number}}
 	 */
-	static get Type() {
-		return {
-			INVALID: 0,
-			INDIVIDUAL: 1,
-			MULTISEAT: 2,
-			GAMESERVER: 3,
-			ANON_GAMESERVER: 4,
-			PENDING: 5,
-			CONTENT_SERVER: 6,
-			CLAN: 7,
-			CHAT: 8,
-			P2P_SUPER_SEEDER: 9,
-			ANON_USER: 10
-		};
+	static get Type(): PossibleTypes {
+		return Types;
 	}
 
 	/**
 	 * List of named instances
-	 * @static
-	 * @returns {{ALL: number, CONSOLE: number, WEB: number, DESKTOP: number}}
 	 */
-	static get Instance() {
-		return {
-			ALL: 0,
-			DESKTOP: 1,
-			CONSOLE: 2,
-			WEB: 4
-		};
+	static get Instance(): PossibleInstances {
+		return Instances;
 	}
 
 	/**
 	 * Mapping of SteamID types to their characters
-	 * @static
-	 * @returns {object}
 	 */
-	static get TypeChars() {
+	static get TypeChars(): {[idType: string]: string} {
 		return {
 			[SteamID.Type.INVALID]: 'I',
 			[SteamID.Type.INDIVIDUAL]: 'U',
@@ -74,21 +45,17 @@ class SteamID {
 	 * @static
 	 * @returns {number}
 	 */
-	static get AccountIDMask() { return 0xFFFFFFFF; }
+	static get AccountIDMask(): number { return 0xFFFFFFFF; }
 
 	/**
 	 * Mask to be used to get the instance out of the upper 32 bits of a 64-bit SteamID
-	 * @static
-	 * @returns {number}
 	 */
-	static get AccountInstanceMask() { return 0x000FFFFF; }
+	static get AccountInstanceMask(): number { return 0x000FFFFF; }
 
 	/**
 	 * Flags in SteamID instance for chat type IDs
-	 * @static
-	 * @returns {{Lobby: number, Clan: number, MMSLobby: number}}
 	 */
-	static get ChatInstanceFlags() {
+	static get ChatInstanceFlags(): {Lobby: number, Clan: number, MMSLobby: number} {
 		return {
 			Clan: (SteamID.AccountInstanceMask + 1) >> 1,
 			Lobby: (SteamID.AccountInstanceMask + 1) >> 2,
@@ -96,11 +63,16 @@ class SteamID {
 		};
 	}
 
+	universe: Universes;
+	type: Types;
+	instance: number;
+	accountid: number;
+
 	/**
 	 * Create a new SteamID object.
 	 * @param {string|BigInt} [input] - BigInt containing 64-bit SteamID, or string containing 64-bit SteamID/Steam2/Steam3 text formats. If omitted, creates a blank SteamID object.
 	 */
-	constructor(input) {
+	constructor(input?: string|BigInt|null) {
 		this.universe = SteamID.Universe.INVALID;
 		this.type = SteamID.Type.INVALID;
 		this.instance = SteamID.Instance.ALL;
@@ -119,7 +91,7 @@ class SteamID {
 			this.instance = Number((num >> 32n) & BigInt(SteamID.AccountInstanceMask));
 			this.type = Number((num >> 52n) & 0xFn);
 			this.universe = Number(num >> 56n);
-		} else if ((matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
+		} else if (typeof input == 'string' && (matches = input.match(/^STEAM_([0-5]):([0-1]):([0-9]+)$/))) {
 			// Steam2 ID
 			let [_, universe, mod, accountid] = matches;
 
@@ -127,7 +99,7 @@ class SteamID {
 			this.type = SteamID.Type.INDIVIDUAL;
 			this.instance = SteamID.Instance.DESKTOP;
 			this.accountid = (parseInt(accountid, 10) * 2) + parseInt(mod, 10);
-		} else if ((matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?]$/))) {
+		} else if (typeof input == 'string' && (matches = input.match(/^\[([a-zA-Z]):([0-5]):([0-9]+)(:[0-9]+)?]$/))) {
 			// Steam3 ID
 			let [_, typeChar, universe, accountid, instanceid] = matches;
 
@@ -167,16 +139,13 @@ class SteamID {
 
 	/**
 	 * Creates a new SteamID object from an individual account ID.
-	 * @static
-	 * @param {int|BigInt|string} accountid
-	 * @returns {SteamID}
 	 */
-	static fromIndividualAccountID(accountid) {
+	static fromIndividualAccountID(accountid: number|BigInt|string): SteamID {
 		if (typeof accountid == 'bigint') {
 			accountid = Number(accountid);
 		}
 
-		let parsed = parseInt(accountid, 10);
+		let parsed = parseInt(accountid.toString(), 10);
 		if (isNaN(parsed)) {
 			// writes to stderr in node
 			console.error(`[steamid] Warning: SteamID.fromIndividualAccountID() called with NaN argument "${accountid}" (type "${typeof accountid}")`);
@@ -195,9 +164,8 @@ class SteamID {
 	 * Returns whether Steam would consider a given ID to be "valid".
 	 * This does not check whether the given ID belongs to a real account, nor does it check that the given ID is for
 	 * an individual account or in the public universe.
-	 * @returns {boolean}
 	 */
-	isValid() {
+	isValid(): boolean {
 		fixTypes(this);
 
 		if (this.type <= SteamID.Type.INVALID || this.type > SteamID.Type.ANON_USER) {
@@ -227,9 +195,8 @@ class SteamID {
 	/**
 	 * Returns whether this SteamID is valid and belongs to an individual user in the public universe with a desktop instance.
 	 * This is what most people think of when they think of a SteamID. Does not check whether the account actually exists.
-	 * @returns {boolean}
 	 */
-	isValidIndividual() {
+	isValidIndividual(): boolean {
 		return this.universe == SteamID.Universe.PUBLIC
 			&& this.type == SteamID.Type.INDIVIDUAL
 			&& this.instance == SteamID.Instance.DESKTOP
@@ -238,18 +205,16 @@ class SteamID {
 
 	/**
 	 * Checks whether the given ID is for a legacy group chat.
-	 * @returns {boolean}
 	 */
-	isGroupChat() {
+	isGroupChat(): boolean {
 		fixTypes(this);
 		return !!(this.type == SteamID.Type.CHAT && this.instance & SteamID.ChatInstanceFlags.Clan);
 	}
 
 	/**
 	 * Check whether the given Id is for a game lobby.
-	 * @returns {boolean}
 	 */
-	isLobby() {
+	isLobby(): boolean {
 		fixTypes(this);
 		return !!(this.type == SteamID.Type.CHAT && (this.instance & SteamID.ChatInstanceFlags.Lobby || this.instance & SteamID.ChatInstanceFlags.MMSLobby));
 	}
@@ -257,9 +222,8 @@ class SteamID {
 	/**
 	 * Renders the ID in Steam2 format (e.g. "STEAM_0:0:23071901")
 	 * @param {boolean} [newerFormat=false] - If true, use 1 as the first digit instead of 0 for the public universe
-	 * @returns {string}
 	 */
-	steam2(newerFormat = false) {
+	steam2(newerFormat: boolean = false): string {
 		fixTypes(this);
 		if (this.type != SteamID.Type.INDIVIDUAL) {
 			throw new Error('Can\'t get Steam2 rendered ID for non-individual ID');
@@ -276,17 +240,15 @@ class SteamID {
 	/**
 	 * Renders the ID in Steam2 format (e.g. "STEAM_0:0:23071901")
 	 * @param {boolean} [newerFormat=false] - If true, use 1 as the first digit instead of 0 for the public universe
-	 * @returns {string}
 	 */
-	getSteam2RenderedID(newerFormat = false) {
+	getSteam2RenderedID(newerFormat: boolean = false): string {
 		return this.steam2(newerFormat);
 	}
 
 	/**
 	 * Renders the ID in Steam3 format (e.g. "[U:1:46143802]")
-	 * @returns {string}
 	 */
-	steam3() {
+	steam3(): string {
 		fixTypes(this);
 		let typeChar = SteamID.TypeChars[this.type] || 'i';
 
@@ -310,33 +272,29 @@ class SteamID {
 
 	/**
 	 * Renders the ID in Steam3 format (e.g. "[U:1:46143802]")
-	 * @returns {string}
 	 */
-	getSteam3RenderedID() {
+	getSteam3RenderedID(): string {
 		return this.steam3();
 	}
 
 	/**
 	 * Renders the ID in 64-bit decimal format, as a string (e.g. "76561198006409530")
-	 * @returns {string}
 	 */
-	getSteamID64() {
+	getSteamID64(): string {
 		return this.getBigIntID().toString();
 	}
 
 	/**
 	 * Renders the ID in 64-bit decimal format, as a string (e.g. "76561198006409530")
-	 * @returns {string}
 	 */
-	toString() {
+	toString(): string {
 		return this.getSteamID64();
 	}
 
 	/**
 	 * Renders the ID in 64-bit decimal format, as a BigInt (e.g. 76561198006409530n)
-	 * @returns {BigInt}
 	 */
-	getBigIntID() {
+	getBigIntID(): BigInt {
 		fixTypes(this);
 		let universe = BigInt(this.universe);
 		let type = BigInt(this.type);
@@ -348,12 +306,12 @@ class SteamID {
 }
 
 // Private methods/functions
-function getTypeFromChar(typeChar) {
+function getTypeFromChar(typeChar: string): number {
 	let charEntry = Object.entries(SteamID.TypeChars).find(([entryType, entryChar]) => entryChar == typeChar);
 	return charEntry ? parseInt(charEntry[0], 10) : SteamID.Type.INVALID;
 }
 
-function fixTypes(sid) {
+function fixTypes(sid: {universe: any, type: any, instance: any, accountid: any}) {
 	['universe', 'type', 'instance', 'accountid'].forEach((prop) => {
 		if (typeof sid[prop] == 'bigint') {
 			// Not sure how this would ever happen, but fix it
@@ -367,4 +325,4 @@ function fixTypes(sid) {
 	});
 }
 
-module.exports = SteamID;
+export = SteamID;
