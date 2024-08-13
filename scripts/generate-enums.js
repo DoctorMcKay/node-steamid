@@ -33,6 +33,7 @@ const TypeData = {
 };
 
 let fileHandle = FS.openSync(Path.resolve(__dirname, '..', 'src', 'enums.ts'), 'w');
+FS.writeSync(fileHandle, '/* eslint-disable */\n\n');
 
 for (let enumType in TypeData) {
 	FS.writeSync(fileHandle, `export type Possible${enumType} = {\n`);

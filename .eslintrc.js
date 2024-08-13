@@ -12,6 +12,7 @@ module.exports = {
 		ecmaVersion: 12
 	},
 	ignorePatterns: [
+		'test/*',
 		'dist/*',
 		'dev/*',
 		'scripts/*'
@@ -32,11 +33,14 @@ module.exports = {
 		// Require spaces before and after keywords (like "if")
 		'keyword-spacing': 'error',
 		// Don't allow unused variables, but allow unused function args (e.g. in callbacks) and global vars
-		'no-unused-vars': ['error', {vars: 'local', args: 'none', varsIgnorePattern: '^_'}],
+		'@typescript-eslint/no-unused-vars': ['error', {vars: 'local', args: 'none', varsIgnorePattern: '^_'}],
 		// Require using dot notation (obj.prop instead of obj['prop']) where possible
 		'dot-notation': 'error',
 		// Don't use spaces before parens in anonymous or named functions
-		'space-before-function-paren': ['error', {anonymous: 'never', named: 'never', asyncArrow: 'always'}]
+		'space-before-function-paren': ['error', {anonymous: 'never', named: 'never', asyncArrow: 'always'}],
+		'prefer-const': 'off',
+		'@typescript-eslint/no-inferrable-types': 'off',
+		'@typescript-eslint/no-explicit-any': 'off',
 
 		// We will NOT be using eqeqeq for a few reasons:
 		//  1. I would have to go through and check every single `==` to make sure that it's not depending on loose equality checks.

@@ -1,8 +1,6 @@
 const Assert = require('assert');
 const SteamID = require('../dist');
 
-console.log(SteamID);
-
 function start(test) {
 	process.stdout.write(`testing ${test}... `);
 }

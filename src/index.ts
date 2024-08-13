@@ -72,7 +72,7 @@ class SteamID {
 	 * Create a new SteamID object.
 	 * @param {string|BigInt} [input] - BigInt containing 64-bit SteamID, or string containing 64-bit SteamID/Steam2/Steam3 text formats. If omitted, creates a blank SteamID object.
 	 */
-	constructor(input?: string|BigInt|null) {
+	constructor(input?: string|bigint|null) {
 		this.universe = SteamID.Universe.INVALID;
 		this.type = SteamID.Type.INVALID;
 		this.instance = SteamID.Instance.ALL;
@@ -140,7 +140,7 @@ class SteamID {
 	/**
 	 * Creates a new SteamID object from an individual account ID.
 	 */
-	static fromIndividualAccountID(accountid: number|BigInt|string): SteamID {
+	static fromIndividualAccountID(accountid: number|bigint|string): SteamID {
 		if (typeof accountid == 'bigint') {
 			accountid = Number(accountid);
 		}
@@ -294,7 +294,7 @@ class SteamID {
 	/**
 	 * Renders the ID in 64-bit decimal format, as a BigInt (e.g. 76561198006409530n)
 	 */
-	getBigIntID(): BigInt {
+	getBigIntID(): bigint {
 		fixTypes(this);
 		let universe = BigInt(this.universe);
 		let type = BigInt(this.type);

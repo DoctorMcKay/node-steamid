@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 export type PossibleUniverses = {
 	INVALID: 0,
 	PUBLIC: 1,
